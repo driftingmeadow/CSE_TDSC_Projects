@@ -1,0 +1,96 @@
+
+
+
+/* 	THIS SECTION IS THE CSS PART OF THE LOGIN AND REGISTER FORMS */
+
+#wrapper{
+	width: 60%;
+	right: 0px;
+	min-height: 560px;	
+	margin: 0px auto;	
+	width: 500px;
+	position: relative;	
+}
+/**** Styling the form elements **/
+/**** general text styling ****/
+
+/** Red * */
+.required:after {
+	content: " *";
+	color: red;
+}
+
+
+#wrapper a{
+	color: rgb(95, 155, 198);
+	text-decoration: underline;
+}
+
+#wrapper p{
+	margin-bottom:10px;
+}
+#wrapper p:first-child{
+	margin: 0px;
+}
+#wrapper label{
+	color: rgb(64, 92, 96);
+	position: relative;
+}
+
+input {
+  outline: none;
+}
+
+/*styling both submit buttons */
+#wrapper p.button input{
+	width: 30%;
+	cursor: pointer;
+	padding: 8px 5px;
+	font-family: 'BebasNeueRegular','Arial Narrow',Arial,sans-serif;	
+	font-size: 18px;	
+	border: 1px solid rgb(28, 108, 122);	
+	margin-bottom: 10px;	
+}
+
+p.login.button,
+p.signin.button{
+	text-align: center;
+}
+
+/* styling the checkbox "keep me logged in"*/
+.keeplogin{
+	margin-top: -5px;
+}
+.keeplogin input,
+.keeplogin label{
+	display: inline-block;
+	font-size: 12px;	
+	font-style: italic;
+}
+.keeplogin input#loginkeeping{
+	margin-right: 5px;
+}
+.keeplogin label{
+	width: 80%;
+}
+
+#register
+{
+	position: absolute;
+	top: 0px;
+	width: 88%;	
+	padding: 2px 6% 1px 6%;
+	margin: 0 0 4px 0;
+	background:beige; /* rgb(247, 247, 247);*/
+	border: 1px solid rgba(147, 184, 189,0.8);
+}
+ 
+#login{
+	position: absolute;
+	top: 0px;
+	width: 88%;	
+	padding: 2px 6% 1px 6%;
+	margin: 0 0 4px 0;
+	background:beige; /* rgb(247, 247, 247);*/
+	border: 1px solid rgba(147, 184, 189,0.8);
+}

@@ -1,0 +1,583 @@
+# JalTantra Bundled Deployment Guide
+
+**Version:** 2.3/2025-11 - Local Dependencies  
+**Date:** November 2025  
+**Repository:** https://github.com/jaltantra/Jaltantra_Branch_v2.git
+
+---
+
+## Table of Contents
+1. Overview of Changes
+2. Why Bundle Dependencies
+3. What Was Changed
+4. Complete Deployment Guide
+5. Troubleshooting
+6. Technical Details
+
+---
+
+## Overview of Changes
+
+### The Problem We Solved
+
+**Original Issue:**
+- The `initialize.sh` script downloaded Tomcat and OR-Tools from internet sources
+- Download links frequently broke (404 errors)
+- Specific versions became unavailable over time
+- OR-Tools had strict version compatibility with Ubuntu (GLIBCXX library requirements)
+- New deployments would fail when dependencies disappeared from mirrors
+
+**Solution:**
+- Bundle the exact working versions of Tomcat and OR-Tools with the project
+- Create `initialize_local.sh` that uses local bundled files instead of downloading
+- Guaranteed reproducibility across any system
+- No dependency on external download sources
+
+---
+
+## Why Bundle Dependencies
+
+### Benefits of Bundled Approach
+
+**Offline Capable:** No internet needed (except for system packages)  
+**Version Control:** Exact tested versions preserved  
+**Faster Deployment:** No download time  
+**No Broken Links:** Independent of external servers  
+**GLIBCXX Compatibility:** Proven compatible binaries  
+
+---
+
+## What Was Changed
+
+1.New Files Added
+
+#### 1. `initialize_local.sh` (NEW)
+Replaces `initialize.sh` for deployments using bundled dependencies.
+
+**Key Differences from `initialize.sh`:**
+- Checks for `jaltantra_dependencies/` folder instead of downloading
+- Extracts bundled `tomcat9.tar.gz` to `/opt/tomcat9/`
+- Extracts bundled `ortools-complete.tar.gz` to `/usr/local/lib/ortools-linux-x86-64/`
+- Handles path structure in tar files correctly
+- Provides verification steps
+- No internet dependency for Tomcat/OR-Tools
+
+#### 2. `jaltantra_dependencies/` Folder (NEW)
+Contains bundled dependencies extracted from working production system.
+
+**Contents:**
+```
+jaltantra_dependencies/
+├── tomcat9.tar.gz           (28MB) - Apache Tomcat 9.0.109
+└── ortools-complete.tar.gz  (19MB) - OR-Tools 9.12 native libraries
+```
+---
+
+## Complete Deployment Guide
+
+### Prerequisites
+
+- Fresh Ubuntu 22.04 or 24.04 LTS
+- Internet connection (for git clone and apt packages only)
+---
+
+**Understanding the Dependencies:**
+
+**tomcat9.tar.gz (28MB):**
+- Complete Apache Tomcat 9.0.109 installation
+- Contains path structure: `opt/tomcat9/`
+- Includes: bin/, conf/, lib/, webapps/, logs/, temp/, work/
+
+**ortools-complete.tar.gz (19MB):**
+- Google OR-Tools native libraries only
+- Contains path structure: `ortools-linux-x86-64/`
+- Includes: All `.so` files (libjniortools.so, libortools.so.9, libabsl_*.so, etc.)
+- Ubuntu 22.04 compatible (GLIBCXX_3.4.30)
+
+---
+
+### Step 1: Setup on New Ubuntu Machine
+
+#### 1.1 System Preparation
+
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install git
+sudo apt install -y git
+```
+
+#### 1.2 Clone Repository
+
+```bash
+cd ~
+git clone https://github.com/jaltantra/Jaltantra_Branch_v2.git
+cd Jaltantra_Branch_v2
+```
+
+#### 1.3 Extract Dependencies
+```bash
+# Extract dependencies archive in project root
+tar -xzf ~/jaltantra_dependencies.tar.gz
+
+# Verify structure
+ls -la jaltantra_dependencies/
+# Should show:
+# - tomcat9.tar.gz (28M)
+# - ortools-complete.tar.gz (19M)
+```
+
+**Expected Project Structure:**
+```
+Jaltantra_Branch_v2/
+├── jaltantra_dependencies/          ← BUNDLED DEPENDENCIES
+│   ├── tomcat9.tar.gz
+│   └── ortools-complete.tar.gz
+├── initialize.sh                    ← ORIGINAL (downloads from internet)
+├── initialize_local.sh              ← NEW (uses bundled files)
+├── compile_and_deploy.sh
+├── db.sql
+├── google_api_key.txt
+├── src/
+├── WebContent/
+├── lib/
+└── README.md
+```
+---
+```bash
+# Make the script executable
+chmod +x initialize_local.sh
+```
+
+---
+
+### 1.4: Run Installation
+
+```bash
+# Execute the bundled installation script
+sudo ./initialize_local.sh
+```
+
+**Expected prompts:**
+- MySQL root password: **Press ENTER** (blank)
+- Remove existing directories: **Type 'y'** if prompted
+
+---
+
+### 1.5: Configure Java Environment
+
+```bash
+# Set JAVA_HOME
+export JAVA_HOME=/usr/lib/jvm/default-java
+export PATH=$PATH:$JAVA_HOME/bin
+
+# Verify
+java -version
+javac -version
+```
+
+**Make permanent (optional):**
+```bash
+echo 'export JAVA_HOME=/usr/lib/jvm/default-java' >> ~/.bashrc
+echo 'export PATH=$PATH:$JAVA_HOME/bin' >> ~/.bashrc
+source ~/.bashrc
+```
+---
+
+### 1.6: Configure Tomcat for OR-Tools
+
+```bash
+# Create setenv.sh with library path
+sudo bash -c 'echo "export CATALINA_OPTS=\"\$CATALINA_OPTS -Djava.library.path=/usr/local/lib/ortools-linux-x86-64\"" > /opt/tomcat9/bin/setenv.sh'
+
+# Make executable
+sudo chmod +x /opt/tomcat9/bin/setenv.sh
+
+# Verify
+cat /opt/tomcat9/bin/setenv.sh
+```
+
+**Expected output:**
+```
+export CATALINA_OPTS="$CATALINA_OPTS -Djava.library.path=/usr/local/lib/ortools-linux-x86-64"
+```
+
+---
+
+### 1.7: Configure Google Maps API
+
+```bash
+# Update your API key in the file
+/Jaltantra_Branch_v202511/WebContent/system.jsp
+
+# Update Google api console - add the ip address/website
+
+```
+
+---
+
+### 1.8: Compile and Deploy
+
+```bash
+# Make compile script executable
+chmod +x compile_and_deploy.sh
+
+# Compile and deploy application
+sudo ./compile_and_deploy.sh
+```
+
+**Expected output:**
+```
+Using CATALINA_BASE:   /opt/tomcat9
+Using CATALINA_HOME:   /opt/tomcat9
+...
+Tomcat started.
+```
+
+---
+
+### 1.9: Verify Deployment
+
+```bash
+# Check Tomcat process
+sudo ps aux | grep tomcat
+
+# Check port 8080 listening
+sudo netstat -tlnp | grep :8080
+
+# Test HTTP response
+curl -I http://localhost:8080/jaltantra/
+```
+
+**Expected:** `HTTP/1.1 200`
+
+---
+
+### 1.10: Access Application
+
+**Local access:**
+```
+http://localhost:8080/jaltantra/
+```
+
+**Network access:**
+```bash
+# Get your IP
+hostname -I
+
+# Access from other computers
+http://YOUR_IP:8080/jaltantra/
+```
+---
+
+## 2: Troubleshooting
+
+### Issue 1: tomcat9.tar.gz Not Found
+
+**Error:**
+```
+ERROR: jaltantra_dependencies/tomcat9.tar.gz not found!
+```
+
+**Solution:**
+```bash
+# Check if dependencies folder exists
+ls -la jaltantra_dependencies/
+
+# Re-extract if missing
+tar -xzf ~/jaltantra_dependencies.tar.gz
+
+# Verify
+ls -lh jaltantra_dependencies/
+```
+
+---
+
+### Issue 2: Tomcat Extracted to Wrong Path
+
+**Symptom:** `/opt/tomcat9/` is empty or doesn't exist
+
+**Solution:**
+```bash
+# Check where it extracted
+ls -la /opt/
+ls -la /tomcat9/  # Might be here
+
+# If in wrong location, move it
+sudo mv /tomcat9 /opt/tomcat9
+
+# Or re-run script
+sudo rm -rf /opt/tomcat9 /tomcat9
+sudo ./initialize_local.sh
+```
+
+---
+
+### Issue 3: OR-Tools Library Not Found
+
+**Error:**
+```
+java.lang.UnsatisfiedLinkError: no jniortools in java.library.path
+```
+
+**Solution:**
+```bash
+# Verify OR-Tools installed
+ls -la /usr/local/lib/ortools-linux-x86-64/
+
+# Verify setenv.sh exists
+cat /opt/tomcat9/bin/setenv.sh
+
+# If missing, recreate
+sudo bash -c 'echo "export CATALINA_OPTS=\"\$CATALINA_OPTS -Djava.library.path=/usr/local/lib/ortools-linux-x86-64\"" > /opt/tomcat9/bin/setenv.sh'
+sudo chmod +x /opt/tomcat9/bin/setenv.sh
+
+# Restart Tomcat
+sudo /opt/tomcat9/bin/shutdown.sh
+sudo ./compile_and_deploy.sh
+```
+
+---
+
+### Issue 4: GLIBCXX Version Mismatch
+
+**Error:**
+```
+version 'GLIBCXX_3.4.32' not found
+```
+
+**Cause:** Using OR-Tools compiled for Ubuntu 24.04 on Ubuntu 22.04
+
+**Solution:**
+```bash
+# Check your Ubuntu version
+lsb_release -a
+
+# Check available GLIBCXX
+strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep GLIBCXX | tail -5
+
+# For Ubuntu 22.04, must use Ubuntu 22.04 compatible OR-Tools
+# Verify bundled OR-Tools is correct version
+tar -tzf jaltantra_dependencies/ortools-complete.tar.gz | head -5
+```
+
+**Prevention:** Always bundle OR-Tools from a working system with same Ubuntu version
+
+---
+
+### Issue 5: MySQL Connection Failed
+
+**Error:**
+```
+Access denied for user 'jaltantra_branch'@'localhost'
+```
+
+**Solution:**
+```bash
+# Reset database
+sudo mysql -u root << EOF
+DROP DATABASE IF EXISTS jaltantra_db;
+DROP USER IF EXISTS 'jaltantra_branch'@'localhost';
+quit;
+EOF
+
+# Re-run database setup
+sudo mysql -u root < db.sql
+
+# Test connection
+mysql -u jaltantra_branch -p'jaltantra_branch' -e "SHOW DATABASES;"
+```
+
+---
+
+### Issue 6: Port 8080 Already in Use
+
+**Error:**
+```
+Address already in use
+```
+
+**Solution:**
+```bash
+# Find what's using port 8080
+sudo lsof -i :8080
+
+# Kill the process
+sudo kill -9 <PID>
+
+# Or change Tomcat port
+sudo nano /opt/tomcat9/conf/server.xml
+# Change: <Connector port="8080" to port="8090"
+```
+
+---
+
+## Technical Details
+
+### Tomcat Archive Structure
+
+**File:** `tomcat9.tar.gz` (28MB)
+
+**Internal structure:**
+```
+opt/
+└── tomcat9/
+    ├── bin/           (executables, scripts)
+    ├── conf/          (configuration files)
+    ├── lib/           (Java libraries)
+    ├── logs/          (log files)
+    ├── temp/          (temporary files)
+    ├── webapps/       (web applications)
+    └── work/          (compiled JSPs)
+```
+
+**Extraction method:**
+```bash
+# Creates temporary directory
+TEMP_DIR=$(mktemp -d)
+
+# Extracts: opt/tomcat9/ → /tmp/xyz/opt/tomcat9/
+sudo tar -xzf tomcat9.tar.gz -C "$TEMP_DIR"
+
+# Moves: /tmp/xyz/opt/tomcat9/ → /opt/tomcat9/
+sudo mv "$TEMP_DIR/opt/tomcat9" /opt/tomcat9
+
+# Cleans up
+sudo rm -rf "$TEMP_DIR"
+```
+
+This handles the `opt/` prefix in the archive correctly.
+
+---
+
+### OR-Tools Archive Structure
+
+**File:** `ortools-complete.tar.gz` (19MB)
+
+**Internal structure:**
+```
+ortools-linux-x86-64/
+├── libjniortools.so           (JNI bridge - 2.3MB)
+├── libortools.so.9            (Main library - 36MB)
+├── libabsl_*.so.2407.0.0      (Abseil libraries)
+├── libCbc.so.2                (Coin-OR CBC solver)
+├── libClp.so.1                (Coin-OR CLP solver)
+├── libprotobuf.so.29.3.0      (Protocol Buffers)
+└── (100+ other .so files)
+```
+
+**Why only native libraries?**
+- Java JAR (`ortools-java-9.14.6206.jar`) already in project's `lib/` folder
+- Runtime only needs native `.so` files for JNI calls
+- Smaller archive size (19MB vs 48MB for full distribution)
+
+**Compatibility:**
+- Compiled for Ubuntu 22.04
+- Requires GLIBCXX_3.4.30 or lower
+- Must match system's libstdc++ version
+
+---
+
+### Path Requirements
+
+These paths are **hardcoded** in multiple files and **cannot be changed** without modifying:
+
+**Tomcat path:** `/opt/tomcat9/`
+- Used in: `compile_and_deploy.sh`, `setenv.sh`
+- Cannot relocate without updating all references
+
+**OR-Tools path:** `/usr/local/lib/ortools-linux-x86-64/`
+- Used in: `setenv.sh` (CATALINA_OPTS java.library.path)
+- Referenced at runtime by Java System.loadLibrary()
+
+---
+
+### Version Information
+
+**Bundled Versions:**
+- **Tomcat:** 9.0.109 (September 2025)
+- **OR-Tools:** 9.12.4544 (Ubuntu 22.04 build)
+- **Java:** OpenJDK 11 or 17
+- **MySQL:** 8.0+
+- **Ubuntu:** 22.04 LTS (tested) or 24.04 LTS
+
+**Compatibility Matrix:**
+
+| Ubuntu | GLIBCXX | OR-Tools Build | Status |
+|--------|---------|----------------|--------|
+| 22.04  | 3.4.30  | Ubuntu-22.04   | ✅ Works |
+| 24.04  | 3.4.32  | Ubuntu-24.04   | ✅ Works |
+
+---
+
+## Future Maintenance
+
+### Updating Bundled Dependencies
+
+When new versions are needed:
+
+1. **Test on production system first**
+2. **Verify optimization works correctly**
+3. **Extract new archives:**
+   ```bash
+   cd /opt
+   sudo tar -czf ~/tomcat9-NEW.tar.gz tomcat9/
+   
+   cd /usr/local/lib
+   sudo tar -czf ~/ortools-NEW.tar.gz ortools-linux-x86-64/
+   ```
+4. **Replace in repository**
+5. **Update documentation with new versions**
+6. **Test on fresh system**
+
+### Version Tracking
+
+Document versions in `jaltantra_dependencies/README.md`:
+```markdown
+# JalTantra Dependencies
+
+## Current Versions
+- Tomcat: 9.0.109 (Sept 2025)
+- OR-Tools: 9.12.4544 (Ubuntu 22.04)
+- Extracted from: production.iitb.ac.in
+- Date: 2025-11-12
+- Ubuntu: 22.04 LTS
+- GLIBCXX: 3.4.30
+```
+
+---
+
+## Success Indicators
+
+After successful deployment, you should see:
+
+Tomcat running on port 8080  
+JalTantra homepage accessible  
+Network optimization produces results  
+No GLIBCXX errors in logs  
+MySQL database connected  
+Google Maps loading correctly  
+
+**Test optimization:**
+1. Create a simple network
+2. Add nodes and pipes
+3. Run optimization
+4. Verify results appear
+
+If optimization fails, check `/opt/tomcat9/logs/catalina.out` for errors.
+
+---
+
+## Support Resources
+
+**Repository:** https://github.com/jaltantra/JT_Branch_Current_Deploy_2025  
+**IIT Bombay JalTantra:** https://www.cse.iitb.ac.in/jaltantra/  
+**OR-Tools Documentation:** https://developers.google.com/optimization  
+**Tomcat Documentation:** https://tomcat.apache.org/tomcat-9.0-doc/  
+
+---
+
+**Document Version:** 2.3/2025-11 - Local Dependencies  
+**Last Updated:** November 17, 2025  
+**Created/Maintained By:** Sakina

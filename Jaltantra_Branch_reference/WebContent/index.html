@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JalTantra: System For Optimization of Piped Water Networks, IIT Bombay</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Matched to register.jsp — olive/sage card on warm parchment */
+      --page-bg:      #ffffff;
+      --header-bg:    beige;
+      --card-bg:      #ffffff;
+      --white:        #ffffff;
+      --border:       #b8b89a;
+      --border-light: #ccccb0;
+      --text:         #222222;
+      --text-muted:   #555555;
+      --link:         #4169aa;
+      --link-hover:   #2a4b8a;
+      --btn-bg:       #deded0;
+      --btn-border:   #909080;
+      --accent:       #3a5a9a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      background: var(--page-bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; color: var(--link-hover); }
+
+    /*  HEADER  */
+    header {
+      background: var(--header-bg);
+      border-bottom: 2px solid var(--border);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-brand img {
+      height: 52px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: var(--text);
+    }
+
+    .brand-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    nav {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    nav a {
+      font-size: 13px;
+      padding: 5px 12px;
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+    nav a:hover { background: rgba(0,0,0,0.06); text-decoration: none; color: var(--text); }
+
+    .nav-btn {
+      padding: 5px 14px;
+      border: 1px solid var(--btn-border);
+      border-radius: 4px;
+      background: var(--btn-bg);
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-btn:hover { background: #d0cab8; text-decoration: none; color: var(--text); }
+
+    /*  HERO BANNER  */
+    .hero-banner {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 36px 24px 32px;
+      text-align: center;
+    }
+
+    .hero-banner h1 {
+      font-size: 1.55rem;
+      font-weight: bold;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .hero-banner .subtitle {
+      font-size: 0.97rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .note-box {
+      display: inline-block;
+      background: #f8f8e8;
+      border: 1px solid #b0b070;
+      border-radius: 4px;
+      padding: 7px 16px;
+      font-size: 13px;
+      color: #5a4a00;
+      margin-bottom: 24px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 7px 20px;
+      border: 1px solid var(--btn-border);
+      border-radius: 4px;
+      background: var(--btn-bg);
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--text);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: #ccc6b2; text-decoration: none; color: var(--text); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--white);
+      border-color: #2a4a8a;
+    }
+    .btn-primary:hover { background: #2a4a8a; color: var(--white); text-decoration: none; }
+
+    /*  LAYOUT  */
+    .page-content {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 24px 24px 40px;
+    }
+
+    /*  SECTION BLOCK  */
+    .section-block {
+      background: var(--card-bg);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+    }
+
+    .section-block h2 {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: var(--text);
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .section-block p {
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .section-block p:last-child { margin-bottom: 0; }
+
+    /*  TWO COLUMN  */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    /*  AUTH BOXES  */
+    .auth-box {
+      background: var(--white);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 20px 22px;
+    }
+
+    .auth-box h3 {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 14px;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .form-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .form-row label {
+      width: 96px;
+      font-size: 13px;
+      color: var(--text);
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .form-row input {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 13px;
+      background: var(--white);
+      font-family: Arial, Helvetica, sans-serif;
+      outline: none;
+    }
+    .form-row input:focus { border-color: var(--accent); }
+
+    .req { color: #cc0000; font-size: 12px; }
+
+    .form-submit { text-align: center; margin-top: 14px; }
+
+    .auth-links {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+    .auth-links a { color: var(--link); }
+
+    .register-info {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+
+    /*  HOW-TO STEPS  */
+    .steps-list {
+      counter-reset: steps;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .steps-list li {
+      counter-increment: steps;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .steps-list li::before {
+      content: counter(steps);
+      min-width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: bold;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /*  FEATURE CARDS  */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border: 1px solid var(--border-light);
+      border-radius: 5px;
+      padding: 12px 14px;
+    }
+
+    .feature-card h4 {
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .feature-card p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 0 !important;
+    }
+
+    /*  SAMPLE FILES  */
+    .files-group { margin-bottom: 16px; }
+    .files-group:last-child { margin-bottom: 0; }
+
+    .files-group h4 {
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--text-muted);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .files-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .file-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      background: var(--white);
+      font-size: 12px;
+      color: var(--link);
+    }
+    .file-link:hover { background: var(--header-bg); text-decoration: none; }
+
+    /*  PUBLICATIONS  */
+    .pub-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .pub-item {
+      border-left: 3px solid var(--accent);
+      padding: 8px 12px;
+      background: var(--white);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .pub-item a { font-size: 13px; font-weight: bold; display: block; margin-bottom: 3px; }
+    .pub-item cite { font-size: 12px; color: var(--text-muted); font-style: italic; }
+
+    /*  TUTORIAL CARDS  */
+    .tutorial-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .tutorial-card {
+      background: var(--white);
+      border: 1px solid var(--border-light);
+      border-radius: 5px;
+      padding: 14px 16px;
+    }
+
+    .tutorial-card h4 { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
+    .tutorial-card p { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+
+    /*  FOOTER  */
+    footer {
+      background: var(--header-bg);
+      border-top: 2px solid var(--border);
+      padding: 14px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    footer a { color: var(--link); }
+
+    /*  RESPONSIVE  */
+    @media (max-width: 700px) {
+      .two-col, .tutorial-grid { grid-template-columns: 1fr; }
+      .hero-banner h1 { font-size: 1.15rem; }
+      nav a:not(.nav-btn) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!--  HEADER  -->
+<header>
+  <div class="header-brand">
+    <img src="iitb_logo_black_small.png" alt="IIT Bombay" />
+    <div>
+      <div class="brand-title">JalTantra</div>
+      <div class="brand-sub">System For Optimization of Piped Water Networks, IIT Bombay</div>
+    </div>
+  </div>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#tutorial">Tutorial</a>
+    <a href="#downloads">Sample Files</a>
+    <a href="#publications">Publications</a>
+    <a href="login.jsp" class="nav-btn">Login</a>
+    <a href="register.jsp" class="nav-btn">Sign Up</a>
+  </nav>
+</header>
+
+<!--  HERO BANNER  -->
+<div class="hero-banner">
+  <h1>JalTantra: System For Optimization of Piped Water Networks</h1>
+  <p class="subtitle">A System for Design and Optimization of Water Distribution Networks &mdash; IIT Bombay</p>
+  <div class="note-box">
+    <strong>Note:</strong> The optimize button works with a single click. Please do not use double-click.
+  </div>
+
+</div>
+
+<!--  PAGE CONTENT  -->
+<div class="page-content">
+
+
+
+  <!--  LOGIN / REGISTER  -->
+  <div class="two-col" style="background:var(--white);border:1px solid var(--border-light);border-radius:6px;padding:20px;margin-bottom:18px;">
+
+    <div class="auth-box">
+      <h3>Log in</h3>
+      <div class="form-row">
+        <label>User Name <span class="req">*</span></label>
+        <input type="text" placeholder="User Name" />
+      </div>
+      <div class="form-row">
+        <label>Password <span class="req">*</span></label>
+        <input type="password" placeholder="Password" />
+      </div>
+      <div class="form-submit">
+        <a href="login.jsp" class="btn btn-primary" style="min-width:110px;text-align:center;">Login</a>
+      </div>
+      <div class="auth-links">
+        Not a JalTantra user yet? <a href="register.jsp">Please Register</a><br/>
+        <a href="changepassword.jsp">Change Password?</a> &nbsp;&nbsp;
+        <a href="forgotpassword.jsp">Forgot Password?</a>
+      </div>
+    </div>
+
+    <div class="auth-box">
+      <h3>New User? Register for Free</h3>
+      <p class="register-info">
+        JalTantra System is free and publicly available. To access the system you need to create an account first.
+        Registration takes less than a minute.
+      </p>
+      <ul class="steps-list">
+        <li>Create a free account using the Sign Up form.</li>
+        <li>Log in with your new credentials.</li>
+        <li>Enter your network description — nodes, pipes, ESRs, pumps, valves.</li>
+        <li>Click Optimize once to get the optimal pipe design and download results.</li>
+      </ul>
+      <div class="form-submit">
+        <a href="register.jsp" class="btn btn-primary" style="min-width:150px;text-align:center;">Please Register</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!--  ABOUT  -->
+  <div class="section-block" id="about" style="margin-top:18px;">
+    <h2>Description</h2>
+
+    <img src="Images/South_Mokhada_Tanker_Fed_map.png"
+     alt="Google Earth image of tanker fed villages in Mokhada taluka of Thane"
+     style="
+        width:70%;
+        max-width:650px;
+        height:auto;
+        display:block;
+        margin:20px auto;
+        border:1px solid var(--border-light);
+        border-radius:6px;
+     " />
+    <p>
+      Above is a Google Earth image of tanker fed villages in the Mokhada taluka of Thane.
+      We would like to design a piped water network to alleviate their water problems.
+      A typical multi-village design consists of the following components:
+      Source, MBR (Mass Balancing Reservoir), WTP (Water Treatment Plant),
+      ESR (Elevated Storage Reservoirs), demand points, pipes connecting all of the above, pumps, and valves.
+    </p>
+
+    <img src="Images/Network Design.jpg"
+         alt="Typical Network Design"
+         style="max-width:100%;border:1px solid var(--border-light);border-radius:4px;margin:10px 0;display:block;" />
+    <p>
+      Designing a particular scheme means locating and sizing each of the above components.
+      Which source do we use? Where do we place our ESRs in terms of location and elevation?
+      What should be their capacity? What should be the diameter of the pipes?
+      The aim of the design is to satisfy the water demand of each village and at the same time
+      minimize capital and/or operational cost of the design.
+      Therefore the questions have to be answered in light of that objective.
+    </p>
+    <p>
+      In the first iteration of the system, pipe diameters are optimized given the location and demand of the ESRs.
+      ESR selection (location, height, capacity, and which nodes it serves) is also now integrated into the optimization.
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Pipe Diameter Optimization</h4>
+        <p>Finds optimal diameters for every pipe segment in branched or looped networks under pressure constraints.</p>
+      </div>
+      <div class="feature-card">
+        <h4>ESR Selection</h4>
+        <p>Selects ESR location, height, capacity, and which nodes each ESR serves as part of the optimization.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Pump &amp; Valve Support</h4>
+        <p>Models pumping stations and pressure-reducing valves for complex multi-source and multi-zone schemes.</p>
+      </div>
+      <div class="feature-card">
+        <h4>ILP Solver Engine</h4>
+        <p>Uses Google OR-Tools and COIN-OR Branch and Cut (CBC) for rigorous, cost-optimal solutions.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:12px;font-size:13px;">
+      Linear program interface used: <a href="https://developers.google.com/optimization/">Google OR-Tools</a>
+      &nbsp;|&nbsp;
+      Linear program solver used: <a href="https://projects.coin-or.org/Cbc">COIN-OR Branch and Cut (CBC)</a>
+    </p>
+  </div>
+
+  <!--  TUTORIAL  -->
+  <div class="section-block" id="tutorial">
+    <h2>Tutorial</h2>
+    <p>Watch the JalTantra video tutorial and read the detailed usage instructions to understand input preparation, network entry, optimization, and result interpretation.</p>
+    <div class="tutorial-grid">
+      <div class="tutorial-card">
+        <h4>JalTantra Video Tutorial</h4>
+        <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:4px;margin:8px 0;">
+          <iframe
+            src="https://www.youtube.com/embed/5HfIQJJn6i0"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <a href="https://www.youtube.com/watch?v=5HfIQJJn6i0" target="_blank" class="btn" style="margin-top:6px;font-size:12px;">Watch on YouTube ↗</a>
+      </div>
+      <div class="tutorial-card">
+        <h4>IFORS Presentation</h4>
+        <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:4px;margin:8px 0;">
+          <iframe
+            src="https://www.youtube.com/embed/84dlhct3cS4"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <a href="https://www.youtube.com/watch?v=84dlhct3cS4" target="_blank" class="btn" style="margin-top:6px;font-size:12px;">Watch on YouTube ↗</a>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:13px;">
+      Detailed usage instructions: &nbsp;<a href="usage.html">Link</a>
+    </p>
+  </div>
+
+  <!--  SAMPLE FILES  -->
+  <div class="section-block" id="downloads">
+    <h2>Sample Files</h2>
+    <p>Download sample input and output files to understand the expected format before entering your own network.</p>
+
+    <div class="files-group" style="margin-top:12px;">
+      <h4>Basic Network</h4>
+      <div class="files-grid">
+        <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample.BRA" target="_blank" class="file-link"> Sample.BRA</a>
+        <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample.xml" target="_blank" class="file-link"> Sample.xml</a>
+        <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample_input.xls" target="_blank" class="file-link"> Sample_input.xls</a>
+        <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample_output.xls" target="_blank" class="file-link"> Sample_output.xls</a>
+      </div>
+    </div>
+
+    <div class="files-group">
+      <h4>With ESR Option</h4>
+      <div class="files-grid">
+        <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample_ESR.xml" target="_blank" class="file-link"> Sample_ESR.xml</a>
+        <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample_input_ESR.xls" target="_blank" class="file-link"> Sample_input_ESR.xls</a>
+        <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample_output.xls" target="_blank" class="file-link"> Sample_output_ESR.xls</a>
+      </div>
+    </div>
+
+    <div class="files-group">
+      <h4>With ESR and Pump Option</h4>
+      <div class="files-grid">
+        <a href="Sample_Files/Sample_ESR_Pump.xml" target="_blank" class="file-link"> Sample_ESR_Pump.xml</a>
+        <a href="Sample_Files/Sample_input_ESR_Pump.xls" target="_blank" class="file-link"> Sample_input_ESR_Pump.xls</a>
+        <a href="Sample_Files/Sample_output_ESR_Pump.xls" target="_blank" class="file-link"> Sample_output_ESR_Pump.xls</a>
+      </div>
+    </div>
+  </div>
+
+  <!--  PUBLICATIONS  -->
+  <div class="section-block" id="publications">
+    <h2>Publications</h2>
+    <div class="pub-list">
+      <div class="pub-item">
+        <a href="papers/A Series of ILP Models for the Optimization of Water Distribution Networks.pdf">
+          A Series of ILP Models for the Optimization of Water Distribution Networks
+        </a>
+        <cite>Nikhil Hooda, Ashutosh Mahajan and Om Damani. <em>Sadhana 44.12 (2019): 239, Indian Academy of Sciences.</em></cite>
+      </div>
+      <div class="pub-item">
+        <a href="papers/JalTantra A System for Design and Optimization of Rural Piped Water Networks.pdf">
+          JalTantra: A System for Design and Optimization of Rural Piped Water Networks
+        </a>
+        <cite>Nikhil Hooda and Om Damani. <em>INFORMS Journal on Applied Analytics (2019).</em></cite>
+      </div>
+      <div class="pub-item">
+        <a href="papers/Inclusion_of_tank_configurations_as_a_variable_in_.pdf">
+          Inclusion of Tank Configurations as a Variable in the Cost Optimization of Branched Piped Water Networks
+        </a>
+        <cite>Nikhil Hooda and Om Damani. <em>Drinking Water Engineering and Science 10.1 (2017): 39–44.</em>
+        Preliminary version in <em>14th Conference on Computing and Control for the Water Industry, CCWI 2016.</em></cite>
+      </div>
+      <div class="pub-item">
+        <a href="papers/A System for Optimal Design of Pressure Constrained Branched Piped Water Networks.pdf">
+          A System for Optimal Design of Pressure Constrained Branched Piped Water Networks
+        </a>
+        <cite>Nikhil Hooda and Om Damani. <em>18th Conference on Water Distribution System Analysis, WDSA (2016).</em></cite>
+      </div>
+    </div>
+  </div>
+
+  <!--  CONTACT  -->
+  <div class="section-block">
+    <h2>Contact</h2>
+    <p>
+      Contact <a href="mailto:jaltantra.iitb@gmail.com">jaltantra.iitb@gmail.com</a> for any doubts or queries.
+    </p>
+    <p>
+      Join the <a href="https://groups.google.com/forum/#!forum/jaltantra-users/join">JalTantra Google Group</a> for any discussion regarding JalTantra.
+    </p>
+  </div>
+
+</div><!-- end page-content -->
+
+<!-- FOOTER -->
+<footer>
+  JalTantra, version: 2.2.2.0 &nbsp;|&nbsp;
+  Department of Computer Science &amp; Engineering, IIT Bombay &nbsp;|&nbsp;
+  <a href="mailto:jaltantra.iitb@gmail.com">jaltantra.iitb@gmail.com</a>
+</footer>
+
+</body>
+</html>

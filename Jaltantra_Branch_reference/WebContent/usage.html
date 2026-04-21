@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using JalTantra – Detailed Usage Instructions</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --page-bg:      #ffffff;
+      --header-bg:    beige;
+      --white:        #ffffff;
+      --border:       #b8b89a;
+      --border-light: #ccccb0;
+      --text:         #222222;
+      --text-muted:   #555555;
+      --link:         #4169aa;
+      --link-hover:   #2a4b8a;
+      --btn-bg:       #deded0;
+      --btn-border:   #909080;
+      --accent:       #3a5a9a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      background: var(--white);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; color: var(--link-hover); }
+
+    /*  HEADER  */
+    header {
+      background: var(--header-bg);
+      border-bottom: 2px solid var(--border);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-brand { display: flex; align-items: center; gap: 12px; }
+    .header-brand img { height: 52px; width: auto; object-fit: contain; }
+    .brand-title { font-size: 1.15rem; font-weight: bold; color: var(--text); }
+    .brand-sub { font-size: 0.78rem; color: var(--text-muted); }
+
+    nav { display: flex; gap: 6px; align-items: center; }
+    nav a { font-size: 13px; padding: 5px 12px; border-radius: 4px; color: var(--text-muted); }
+    nav a:hover { background: rgba(0,0,0,0.06); text-decoration: none; color: var(--text); }
+
+    .nav-btn {
+      padding: 5px 14px;
+      border: 1px solid var(--btn-border);
+      border-radius: 4px;
+      background: var(--btn-bg);
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-btn:hover { background: #d0cab8; text-decoration: none; color: var(--text); }
+
+    .btn {
+      display: inline-block;
+      padding: 6px 16px;
+      border: 1px solid var(--btn-border);
+      border-radius: 4px;
+      background: var(--btn-bg);
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--text);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: #ccc6b2; text-decoration: none; color: var(--text); }
+
+    /*  PAGE WRAPPER  */
+    .page-wrapper {
+      display: flex;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 24px 48px;
+      gap: 24px;
+    }
+
+    /*  SIDEBAR TOC  */
+    .sidebar { width: 210px; flex-shrink: 0; }
+
+    .toc {
+      position: sticky;
+      top: 78px;
+      background: #fafaf5;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 14px 14px;
+    }
+
+    .toc h3 {
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .toc ul { list-style: none; display: flex; flex-direction: column; gap: 1px; }
+
+    .toc ul li a {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 4px 6px;
+      border-radius: 3px;
+    }
+    .toc ul li a:hover { background: rgba(58,90,154,0.08); color: var(--accent); text-decoration: none; }
+
+    /*  MAIN CONTENT  */
+    .main-content { flex: 1; min-width: 0; }
+
+    /*  SECTION BLOCK  */
+    .section-block {
+      background: var(--white);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+    }
+
+    .section-block h2 {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: var(--text);
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+    }
+
+    .section-block h3 {
+      font-size: 0.88rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin: 16px 0 8px;
+    }
+
+    .section-block p { margin-bottom: 8px; font-size: 14px; }
+
+    /*  FIELD TABLE  */
+    .field-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .field-table th {
+      background: #f0f0e8;
+      text-align: left;
+      padding: 7px 10px;
+      font-weight: bold;
+      font-size: 12px;
+      color: var(--text-muted);
+      border: 1px solid var(--border-light);
+    }
+
+    .field-table td {
+      padding: 7px 10px;
+      border: 1px solid var(--border-light);
+      vertical-align: top;
+    }
+
+    .field-table tr:nth-child(even) td { background: #fafaf5; }
+
+    .field-table td:first-child {
+      font-weight: bold;
+      white-space: nowrap;
+      width: 210px;
+    }
+
+    .type { font-size: 11px; color: var(--text-muted); font-style: italic; display: block; font-weight: normal; }
+    .optional { font-size: 11px; color: #999; font-style: italic; }
+
+    /*  NOTE BOX  */
+    .note-box {
+      background: #f8f8e8;
+      border: 1px solid #b0b070;
+      border-radius: 4px;
+      padding: 8px 14px;
+      font-size: 13px;
+      color: #5a4a00;
+      margin-bottom: 12px;
+    }
+
+    /*  IO GRID  */
+    .io-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .io-card {
+      background: #fafaf5;
+      border: 1px solid var(--border-light);
+      border-radius: 5px;
+      padding: 12px 14px;
+    }
+
+    .io-card h4 {
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .io-card ul {
+      list-style: disc;
+      padding-left: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /*  SAMPLE FILES  */
+    .files-group { margin-bottom: 14px; }
+    .files-group:last-child { margin-bottom: 0; }
+
+    .files-group h4 {
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .files-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+
+    .file-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      background: var(--white);
+      font-size: 12px;
+      color: var(--link);
+    }
+    .file-link:hover { background: beige; text-decoration: none; }
+
+    /*  HINT LIST  */
+    .hint-list {
+      list-style: disc;
+      padding-left: 20px;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    /*  TAB SCREENSHOT  */
+    .tab-screenshot {
+      margin: 10px 0 4px;
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      max-width: 100%;
+      display: block;
+    }
+
+    /*  FOOTER  */
+    footer {
+      background: beige;
+      border-top: 2px solid var(--border);
+      padding: 14px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    footer a { color: var(--link); }
+
+    /*  RESPONSIVE  */
+    @media (max-width: 760px) {
+      .page-wrapper { flex-direction: column; }
+      .sidebar { width: 100%; }
+      .toc { position: static; }
+      .io-grid { grid-template-columns: 1fr; }
+      nav a:not(.nav-btn) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!--  HEADER  -->
+<header>
+  <div class="header-brand">
+    <img src="iitb_logo_black_small.png" alt="IIT Bombay" />
+    <div>
+      <div class="brand-title">JalTantra</div>
+      <div class="brand-sub">System For Optimization of Piped Water Networks, IIT Bombay</div>
+    </div>
+  </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html#tutorial">Tutorial</a>
+    <a href="index.html#downloads">Sample Files</a>
+    <a href="index.html#publications">Publications</a>
+    <a href="login.jsp" class="nav-btn">Login</a>
+    <a href="register.jsp" class="nav-btn">Sign Up</a>
+  </nav>
+</header>
+
+<!--  PAGE WRAPPER  -->
+<div class="page-wrapper">
+
+  <!-- SIDEBAR TOC -->
+  <aside class="sidebar">
+    <nav class="toc">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#sample-files">Sample Files</a></li>
+        <li><a href="#io">Input / Output</a></li>
+        <li><a href="#map-tab">Map Tab</a></li>
+        <li><a href="#general-tab">General Tab</a></li>
+        <li><a href="#nodes-tab">Nodes Tab</a></li>
+        <li><a href="#pipes-tab">Pipes Tab</a></li>
+        <li><a href="#commercial-tab">Commercial Pipes Tab</a></li>
+        <li><a href="#esr-tab">ESR Tab</a></li>
+        <li><a href="#esr-cost-tab">ESR Cost Tab</a></li>
+        <li><a href="#pump-tab">Pump Tab</a></li>
+        <li><a href="#results-tab">Results Tab</a></li>
+        <li><a href="#hints">Hints &amp; Troubleshooting</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- OVERVIEW -->
+    <div class="section-block" id="overview">
+      <h2>Using JalTantra</h2>
+      <p>JalTantra is a system for design and optimization of water distribution networks. This page explains the inputs, outputs, and each tab of the system interface.</p>
+      <p>JalTantra System: <a href="https://www.cse.iitb.ac.in/jaltantra">https://www.cse.iitb.ac.in/jaltantra</a></p>
+      <p style="margin-top:10px;">
+        <a href="https://www.youtube.com/watch?v=5HfIQJJn6i0" target="_blank" class="btn"> Video Tutorial</a>
+        &nbsp;
+        <a href="script.html" class="btn">Tutorial Script</a>
+      </p>
+    </div>
+
+    <!-- SAMPLE FILES -->
+    <div class="section-block" id="sample-files">
+      <h2>Sample Files</h2>
+      <p>Download sample input and output files to understand the expected format before entering your own network.</p>
+
+      <div class="files-group" style="margin-top:12px;">
+        <h4>Basic Network</h4>
+        <div class="files-grid">
+          <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample.BRA" target="_blank" class="file-link"> Sample.BRA</a>
+          <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample.xml" target="_blank" class="file-link"> Sample.xml</a>
+          <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample_input.xls" target="_blank" class="file-link"> Sample_input.xls</a>
+          <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample_output.xls" target="_blank" class="file-link"> Sample_output.xls</a>
+        </div>
+      </div>
+
+      <div class="files-group">
+        <h4>With ESR Option</h4>
+        <div class="files-grid">
+          <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample_ESR.xml" target="_blank" class="file-link"> Sample_ESR.xml</a>
+          <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample_input_ESR.xls" target="_blank" class="file-link"> Sample_input_ESR.xls</a>
+          <a href="https://www.cse.iitb.ac.in/~nikhilh/Sample_Files/Sample_output.xls" target="_blank" class="file-link"> Sample_output_ESR.xls</a>
+        </div>
+      </div>
+
+      <div class="files-group">
+        <h4>With ESR and Pump Option</h4>
+        <div class="files-grid">
+          <a href="Sample_Files/Sample_ESR_Pump.xml" target="_blank" class="file-link"> Sample_ESR_Pump.xml</a>
+          <a href="Sample_Files/Sample_input_ESR_Pump.xls" target="_blank" class="file-link"> Sample_input_ESR_Pump.xls</a>
+          <a href="Sample_Files/Sample_output_ESR_Pump.xls" target="_blank" class="file-link"> Sample_output_ESR_Pump.xls</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUT / OUTPUT / OBJECTIVE -->
+    <div class="section-block" id="io">
+      <h2>Input, Output &amp; Objective</h2>
+      <div class="note-box">Variables marked {} are optional.</div>
+      <div class="io-grid">
+        <div class="io-card">
+          <h4>Input</h4>
+          <ul>
+            <li>Source node: head</li>
+            <li>Node: elevation, {demand}, {min pressure}</li>
+            <li>Pipe: start/end node, length, {roughness}, {diameter}, {parallel allowed}</li>
+            <li>Commercial pipe diameter: cost</li>
+            <li>ESR: construction cost, capacity factor, {max height}</li>
+            <li>Pump: efficiency, capital cost/kW, energy cost/kWh, lifetime, {discount &amp; inflation rate}</li>
+          </ul>
+        </div>
+        <div class="io-card">
+          <h4>Output</h4>
+          <ul>
+            <li>Pipe diameters</li>
+            <li>[ESR: location, height, capacity, nodes served]</li>
+            <li>[Pump: location, power, head provided]</li>
+          </ul>
+        </div>
+        <div class="io-card">
+          <h4>Objective &amp; Constraints</h4>
+          <ul>
+            <li>Minimize total pipe cost [+ ESR cost] [+ Pump cost]</li>
+            <li>Min pressure maintained at each node</li>
+            <li>Demand met at each node</li>
+            <li>Diameters from commercial pipe data only</li>
+            <li>Network must be branched (no loops)</li>
+            <li>Single sourced</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAP TAB -->
+    <div class="section-block" id="map-tab">
+      <h2>Map Tab</h2>
+      <img src="Images/Map.png" alt="Map Tab screenshot" class="tab-screenshot" />
+      <table class="field-table">
+        <thead><tr><th>Action</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Transfer Data</td><td>Transfer node and pipe information to the Nodes and Pipes tabs.</td></tr>
+          <tr><td>Close Chart</td><td>Deselect the currently selected pipe and close its elevation chart.</td></tr>
+          <tr><td>Search Location</td><td>Search for a location on the map. Type and select from the dropdown or press Enter. Can also enter lat/long coordinates directly.</td></tr>
+          <tr><td>Add Node</td><td>Click the button then click a point on the map to add a node. You can modify the node name, ID, and location (lat/long or by dragging), and set whether it is the source or an ESR node.</td></tr>
+          <tr><td>Add Pipe</td><td>Click the button then click two existing nodes to add a pipe between them.</td></tr>
+          <tr><td>Right-click map</td><td>Options to add/edit/delete nodes, add/delete/split pipes, or close the elevation chart.</td></tr>
+          <tr><td>Right-click node</td><td>Options to delete or edit the node. Deleting a node removes all connected pipes.</td></tr>
+          <tr><td>Right-click pipe</td><td>Options to delete or split a pipe, or close the elevation chart. Splitting adds a node at the split point and creates two pipes.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GENERAL TAB -->
+    <div class="section-block" id="general-tab">
+      <h2>General Tab</h2>
+      <img src="Images/General.png" alt="General Tab screenshot" class="tab-screenshot" />
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Name of Project <span class="type">Text</span></td><td>Your project name.</td></tr>
+          <tr><td>Minimum Node Pressure <span class="type">Double (m)</span></td><td>Default minimum pressure that must be maintained at all nodes.</td></tr>
+          <tr><td>Default Pipe Roughness <span class="type">Double</span></td><td>Default roughness used to calculate headloss in pipes.</td></tr>
+          <tr><td>Minimum Headloss/KM <span class="type">Double (m)</span></td><td>Minimum headloss per km allowed in each pipe.</td></tr>
+          <tr><td>Maximum Headloss/KM <span class="type">Double (m)</span></td><td>Maximum headloss per km allowed in each pipe.</td></tr>
+          <tr><td>Maximum Water Speed <span class="type">Double (m/s) <span class="optional">optional, default: no constraint</span></span></td><td>Maximum speed of water in metres per second allowed in a pipe.</td></tr>
+          <tr><td>Maximum Pipe Pressure <span class="type">Double (m) <span class="optional">optional, default: no constraint</span></span></td><td>Maximum pressure in metres in a pipe. Not strictly enforced — a warning is shown if exceeded.</td></tr>
+          <tr><td>Number of Supply Hours <span class="type">Double</span></td><td>Hours per day that water is supplied. E.g. 12 hours = peak factor of 2.</td></tr>
+          <tr><td>Source Node ID <span class="type">Integer</span></td><td>Unique node ID of the source.</td></tr>
+          <tr><td>Source Node Name <span class="type">String</span></td><td>Name of the source node.</td></tr>
+          <tr><td>Source Head <span class="type">Double (m)</span></td><td>Constant water head provided by the source.</td></tr>
+          <tr><td>Source Elevation <span class="type">Double (m)</span></td><td>Elevation of the source node.</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box" style="margin-top:10px;">Source details should <strong>not</strong> be duplicated in the Nodes tab.</div>
+    </div>
+
+    <!-- NODES TAB -->
+    <div class="section-block" id="nodes-tab">
+      <h2>Nodes Tab</h2>
+      <img src="Images/Nodes.png" alt="Nodes Tab screenshot" class="tab-screenshot" />
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>NodeID <span class="type">Integer</span></td><td>Unique node ID.</td></tr>
+          <tr><td>Node Name <span class="type">String</span></td><td>Name of the node.</td></tr>
+          <tr><td>Elevation <span class="type">Double (m)</span></td><td>Elevation of the node.</td></tr>
+          <tr><td>Demand <span class="type">Double (L/s) <span class="optional">optional, default: 0</span></span></td><td>Water demand of the node.</td></tr>
+          <tr><td>Min. Pressure <span class="type">Double (m) <span class="optional">optional</span></span></td><td>Minimum pressure at this node. Defaults to the value in the General tab.</td></tr>
+          <tr><td>Add New</td><td>Add an extra row for one node.</td></tr>
+          <tr><td>Delete</td><td>Remove selected rows.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PIPES TAB -->
+    <div class="section-block" id="pipes-tab">
+      <h2>Pipes Tab</h2>
+      <img src="Images/Pipes.png" alt="Pipes Tab screenshot" class="tab-screenshot" />
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>PipeID <span class="type">Integer</span></td><td>Unique pipe ID.</td></tr>
+          <tr><td>Start Node <span class="type">Integer</span></td><td>Node ID of the start node.</td></tr>
+          <tr><td>End Node <span class="type">Integer</span></td><td>Node ID of the end node.</td></tr>
+          <tr><td>Length <span class="type">Double (m)</span></td><td>Length of the pipe.</td></tr>
+          <tr><td>Diameter <span class="type">Integer (mm) <span class="optional">optional</span></span></td><td>Diameter of the pipe. If not set, it will be calculated by the optimizer.</td></tr>
+          <tr><td>Roughness <span class="type">Double <span class="optional">optional</span></span></td><td>Roughness used to calculate headloss. Defaults to value in General tab.</td></tr>
+          <tr><td>Parallel Allowed <span class="type">Boolean <span class="optional">optional, default: false</span></span></td><td>Whether a new pipe can be placed in parallel with this one.</td></tr>
+          <tr><td>Add New</td><td>Add an extra row for one pipe.</td></tr>
+          <tr><td>Delete</td><td>Remove selected rows.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- COMMERCIAL PIPES TAB -->
+    <div class="section-block" id="commercial-tab">
+      <h2>Commercial Pipes Tab</h2>
+      <img src="Images/CommercialPipes.png" alt="Commercial Pipes Tab screenshot" class="tab-screenshot" />
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Diameter <span class="type">Integer (mm)</span></td><td>Unique diameter of the commercial pipe.</td></tr>
+          <tr><td>Roughness <span class="type">Double <span class="optional">optional</span></span></td><td>Roughness of this pipe. Defaults to value in General tab.</td></tr>
+          <tr><td>Cost <span class="type">Double (Rs/m)</span></td><td>Cost per metre of this commercial pipe.</td></tr>
+          <tr><td>Add New</td><td>Add an extra row for one commercial pipe diameter.</td></tr>
+          <tr><td>Delete</td><td>Remove selected rows.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ESR TAB -->
+    <div class="section-block" id="esr-tab">
+      <h2>ESR Tab</h2>
+      <img src="Images/ESR.png" alt="ESR Tab screenshot" class="tab-screenshot" />
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Secondary Network Supply Hours <span class="type">Double</span></td><td>Hours per day that an ESR provides water to its secondary network.</td></tr>
+          <tr><td>ESR Capacity Factor <span class="type">Double</span></td><td>Size of ESR relative to the daily demand it serves. E.g. 0.5 means ESR capacity is half the daily demand.</td></tr>
+          <tr><td>Maximum ESR Height <span class="type">Double (m) <span class="optional">optional, default: no constraint</span></span></td><td>Maximum ESR height in metres.</td></tr>
+          <tr><td>Allow ESRs at zero demand nodes <span class="type">Boolean <span class="optional">default: false</span></span></td><td>Allow ESRs at nodes with zero demand. Disabling this significantly speeds up optimization.</td></tr>
+          <tr><td>Nodes with ESRs</td><td>List of nodes that must have ESRs. Default: no constraint.</td></tr>
+          <tr><td>Nodes without ESRs</td><td>List of nodes that must not have ESRs. Default: no constraint.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ESR COST TAB -->
+    <div class="section-block" id="esr-cost-tab">
+      <h2>ESR Cost Tab</h2>
+      <img src="Images/ESR_Cost.png" alt="ESR Cost Tab screenshot" class="tab-screenshot" />
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Minimum Capacity <span class="type">Double (L) <span class="optional">default: max of previous row</span></span></td><td>Minimum capacity for this row in the ESR cost table.</td></tr>
+          <tr><td>Maximum Capacity <span class="type">Double (L)</span></td><td>Maximum capacity for this row in the ESR cost table.</td></tr>
+          <tr><td>Base Cost <span class="type">Double (Rs) <span class="optional">default: calculated from previous row</span></span></td><td>Base cost of an ESR with capacity in this range.</td></tr>
+          <tr><td>Unit Cost <span class="type">Double (Rs/L)</span></td><td>Unit cost per litre for an ESR in this capacity range.</td></tr>
+          <tr><td>Add New</td><td>Add an extra row to the ESR cost table.</td></tr>
+          <tr><td>Delete</td><td>Remove selected rows.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PUMP TAB -->
+    <div class="section-block" id="pump-tab">
+      <h2>Pump Tab</h2>
+      <img src="Images/pump.png" alt="Pump Tab screenshot" class="tab-screenshot" />
+      <table class="field-table">
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Minimum Pump Size <span class="type">Double (kW)</span></td><td>Minimum pump size in kW that can be installed.</td></tr>
+          <tr><td>Pump Efficiency <span class="type">Double (%)</span></td><td>Efficiency of the pump expressed as a percentage.</td></tr>
+          <tr><td>Capital Cost per kW <span class="type">Double (Rs)</span></td><td>Capital cost of the pump per kW of installed capacity.</td></tr>
+          <tr><td>Energy Cost per kWh <span class="type">Double (Rs)</span></td><td>Energy cost per kWh consumed.</td></tr>
+          <tr><td>Design Lifetime <span class="type">Integer (years)</span></td><td>Number of years for which pumps will be operational.</td></tr>
+          <tr><td>Discount Rate <span class="type">Double (%) <span class="optional">default: 0</span></span></td><td>Interest rate as a %. Higher discount rate reduces the effective energy cost of the pump.</td></tr>
+          <tr><td>Inflation Rate <span class="type">Double (%) <span class="optional">default: 0</span></span></td><td>Rate at which prices rise as a %. Higher inflation rate increases the effective energy cost of the pump.</td></tr>
+          <tr><td>Pipes without Pumps</td><td>List of pipes that cannot have pumps. Default: no constraint.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- RESULTS TAB -->
+    <div class="section-block" id="results-tab">
+      <h2>Results Tab</h2>
+      <img src="Images/Result.png" alt="Results Tab screenshot" class="tab-screenshot" />
+      <table class="field-table">
+        <thead><tr><th>Sub-tab</th><th>Contents</th></tr></thead>
+        <tbody>
+          <tr><td>Node Tab</td><td>Node-wise results including head and pressure values for each node.</td></tr>
+          <tr><td>Pipe Tab</td><td>Pipe-wise results including flow, diameter, headloss, headloss per km, and cost for each pipe.</td></tr>
+          <tr><td>Cost Tab</td><td>Cost results for each diameter of commercial pipe used.</td></tr>
+          <tr><td>ESR Tab</td><td>Cost results for each ESR to be constructed.</td></tr>
+          <tr><td>Pump Tab</td><td>Cost results for each pump to be installed.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- HINTS -->
+    <div class="section-block" id="hints">
+      <h2>Hints &amp; Troubleshooting</h2>
+
+      <h3>If you get a timeout message, try one or more of the following:</h3>
+      <ul class="hint-list">
+        <li>Reduce the number of possible ESR locations.</li>
+        <li>Disable ESR at dummy (zero demand) nodes.</li>
+        <li>Disable ESR optimization entirely.</li>
+        <li>If the network still times out, download and use the local version of JalTantra.</li>
+      </ul>
+
+      <h3 style="margin-top:16px;">If you get a message saying "unable to solve network", try one or more of the following:</h3>
+      <ul class="hint-list">
+        <li>Lower the minimum node pressure (in the General tab or for specific nodes).</li>
+        <li>Increase the head of your source node.</li>
+        <li>Reduce demand for nodes.</li>
+        <li>Reduce elevation for nodes.</li>
+        <li>Add commercial pipes with larger diameters.</li>
+        <li>Verify that you are using units consistently throughout.</li>
+      </ul>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end page-wrapper -->
+
+<!--  FOOTER  -->
+<footer>
+  JalTantra, version: 2.2.2.0 &nbsp;|&nbsp;
+  Department of Computer Science &amp; Engineering, IIT Bombay &nbsp;|&nbsp;
+  <a href="mailto:jaltantra.iitb@gmail.com">jaltantra.iitb@gmail.com</a>
