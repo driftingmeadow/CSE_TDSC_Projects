@@ -51,6 +51,7 @@ government scheme reach.
 
 ### 3. System Dynamics — Indian Banking Sector Model
 **Folder:** `System Dynamics/`
+> **Note:** To open the .mdl file, vensim can be used.
 
 A stock-and-flow model of the Indian banking system built in Vensim, developed 
 as part of my self-directed study in system dynamics modelling. Informed by 
@@ -60,7 +61,7 @@ Forrester and Meadows.
 - Models deposit creation, credit flows, and reserve feedback loops
 - Includes corrections for a conservation law violation where the same deposit 
   inflow was triple-counted across stock equations
-- Ongoing work toward a financial markets research proposal
+- Ongoing work toward research proposal
 
 ---
 
