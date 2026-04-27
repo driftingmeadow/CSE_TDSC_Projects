@@ -82,8 +82,4 @@ Key finding: ChatGPT achieved 55–70% similarity to human expert responses for
 common disorders but dropped to 21% for bipolar disorder — indicating a 
 structured clinical reasoning gap that LLM training alone cannot close.
 
----
 
-## Contact
-**Email:** sakinahashmi990@gmail.com  
-**GitHub:** [driftingmeadow](https://github.com/driftingmeadow)
